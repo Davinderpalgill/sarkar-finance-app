@@ -1,0 +1,21 @@
+{
+  "name": "FinanceApp",
+  "displayName": "Sarkar",
+  "expo": {
+    "name": "Sarkar",
+    "slug": "sarkar",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.davindergill.financetracker",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.davindergill.financetracker"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "522ed03e-30f7-4167-be69-801adae7c282"
+      }
+    }
+  }
+}

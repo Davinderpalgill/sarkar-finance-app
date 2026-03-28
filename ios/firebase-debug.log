@@ -1,0 +1,25 @@
+[debug] [2026-03-20T22:58:37.151Z] ----------------------------------------------------------------------
+[debug] [2026-03-20T22:58:37.153Z] Command:       /Users/davindergill/.nvm/versions/node/v22.22.0/bin/node /Users/davindergill/.nvm/versions/node/v22.22.0/bin/firebase projects:list
+[debug] [2026-03-20T22:58:37.153Z] CLI Version:   15.11.0
+[debug] [2026-03-20T22:58:37.153Z] Platform:      darwin
+[debug] [2026-03-20T22:58:37.153Z] Node Version:  v22.22.0
+[debug] [2026-03-20T22:58:37.153Z] Time:          Sat Mar 21 2026 04:28:37 GMT+0530 (India Standard Time)
+[debug] [2026-03-20T22:58:37.153Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-20T22:58:37.154Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-03-20T22:58:37.166Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-20T22:58:37.524Z] *** [apiv2] error from fetch(https://firebase-public.firebaseio.com/cli.json, {"headers":{},"method":"GET"}): FetchError: request to https://firebase-public.firebaseio.com/cli.json failed, reason: self-signed certificate in certificate chain
+[warn] ⚠  Unable to fetch the CLI MOTD and remote config. This is not a fatal error, but may indicate an issue with your network connection. 
+[debug] [2026-03-20T22:58:37.525Z] Failed to fetch MOTD FirebaseError: Failed to make request to https://firebase-public.firebaseio.com/cli.json
+[debug] [2026-03-20T22:58:44.171Z] Running auto auth
+[debug] [2026-03-20T22:58:44.173Z] No OAuth tokens found
+[debug] [2026-03-20T22:58:44.173Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-03-20T22:58:44.391Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 403
+[debug] [2026-03-20T22:58:44.391Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2026-03-20T22:58:44.392Z] Request to https://firebase.googleapis.com/v1beta1/projects?pageSize=1000 had HTTP Error: 403, Your application is authenticating by using local Application Default Credentials. The firebase.googleapis.com API requires a quota project, which is not set by default. To learn how to set your quota project, see https://cloud.google.com/docs/authentication/adc-troubleshooting/user-creds .
+[debug] [2026-03-20T22:58:44.393Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects?pageSize=1000 had HTTP Error: 403, Your application is authenticating by using local Application Default Credentials. The firebase.googleapis.com API requires a quota project, which is not set by default. To learn how to set your quota project, see https://cloud.google.com/docs/authentication/adc-troubleshooting/user-creds .
+    at responseToError (/Users/davindergill/.nvm/versions/node/v22.22.0/lib/node_modules/firebase-tools/lib/responseToError.js:53:12)
+    at RetryOperation._fn (/Users/davindergill/.nvm/versions/node/v22.22.0/lib/node_modules/firebase-tools/lib/apiv2.js:333:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.

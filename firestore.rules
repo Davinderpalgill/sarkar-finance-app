@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can only read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Transactions — private to the owner
+      match /transactions/{txId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // EMIs — private to the owner
+      match /emis/{emiId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Ledger — private to the owner
+      match /ledger/{entryId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Groups — any authenticated member can read/write
+    // (the app filters by membership client-side)
+    match /groups/{groupId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Splits — any authenticated user can read/write
+    // (the app filters by groupId client-side)
+    match /splits/{splitId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

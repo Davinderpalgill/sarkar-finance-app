@@ -1,0 +1,14 @@
+cat_food
+cat_transport
+cat_shopping
+cat_groceries
+cat_entertainment
+cat_utilities
+cat_health
+cat_insurance
+cat_emi
+cat_rent
+cat_salary
+cat_transfer
+cat_investment
+cat_other
