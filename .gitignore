@@ -16,7 +16,7 @@ android/.gradle/
 *.key
 *.mobileprovision
 google-services.json
-GoogleService-Info.plist
+# GoogleService-Info.plist is intentionally tracked (private repo)
 
 # Metro
 .metro-health-check*

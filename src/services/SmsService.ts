@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter, EmitterSubscription } from 'react-native';
+import { NativeModules, NativeEventEmitter, EmitterSubscription, Platform } from 'react-native';
 import { parseSms, RawSmsInput, ParseResult } from '../ml/SmsParser';
 import { TransactionRepository } from '../storage/repositories/TransactionRepository';
 import { CONSTANTS } from '../config/constants';
@@ -18,6 +18,9 @@ export interface SmsImportResult {
  * De-duplicates by smsId; passes each through the full parsing pipeline.
  */
 export async function importHistoricalSms(userId: string): Promise<SmsImportResult> {
+  if (Platform.OS !== 'android' || !SmsModule) {
+    return { imported: 0, duplicates: 0, failed: 0, pendingCategoryConfirm: [], emiDetected: [] };
+  }
   const lookbackMs = CONSTANTS.SMS_IMPORT_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
   const rawMessages: RawSmsInput[] = await SmsModule.readInboxSms(lookbackMs);
 
@@ -69,7 +72,8 @@ export async function importHistoricalSms(userId: string): Promise<SmsImportResu
 export function subscribeToIncomingSms(
   userId: string,
   onTransaction: (result: ParseResult) => void
-): EmitterSubscription {
+): EmitterSubscription | null {
+  if (Platform.OS !== 'android' || !NativeSmsEventEmitter) return null;
   const emitter = new NativeEventEmitter(NativeSmsEventEmitter);
   return emitter.addListener('SMS_RECEIVED', async (sms: RawSmsInput) => {
     try {

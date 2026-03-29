@@ -5,12 +5,18 @@
     "name": "Sarkar",
     "slug": "sarkar",
     "version": "1.0.0",
+    "description": "Personal finance tracker — log expenses, track budgets, split bills, and get AI-powered insights on your spending.",
     "ios": {
       "bundleIdentifier": "com.davindergill.financetracker",
-      "supportsTablet": false
+      "supportsTablet": false,
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.davindergill.financetracker"
+      "package": "com.davindergill.financetracker",
+      "versionCode": 1
     },
     "extra": {
       "eas": {

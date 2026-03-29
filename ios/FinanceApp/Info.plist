@@ -47,6 +47,8 @@
 	<array>
 		<string>MaterialIcons.ttf</string>
 	</array>
+	<key>NSContactsUsageDescription</key>
+	<string>Used to tag transactions with contact names for group expense splitting and ledger entries</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Upload tenant documents like Aadhaar card and agreement</string>
 	<key>NSCameraUsageDescription</key>

@@ -15,6 +15,22 @@
       "ios": {
         "buildConfiguration": "Release"
       }
+    },
+    "appstore": {
+      "distribution": "store",
+      "ios": {
+        "buildConfiguration": "Release",
+        "autoIncrement": true
+      }
+    }
+  },
+  "submit": {
+    "appstore": {
+      "ios": {
+        "appleId": "gilldav1997@gmail.com",
+        "ascAppId": "",
+        "language": "en-US"
+      }
     }
   }
 }
