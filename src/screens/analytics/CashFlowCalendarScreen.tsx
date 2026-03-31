@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   SafeAreaView, RefreshControl, Modal,
@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TransactionRepository } from '../../storage/repositories/TransactionRepository';
+import { useTransactionStore, AccountSummary } from '../../store/transactionStore';
 import { useUiStore } from '../../store/uiStore';
 import { formatCurrency, formatCurrencyCompact } from '../../utils/currencyUtils';
 import { formatDate } from '../../utils/dateUtils';
@@ -22,19 +23,31 @@ const DAYS_OF_WEEK = ['S','M','T','W','T','F','S'];
 
 export default function CashFlowCalendarScreen({ navigation }: Props) {
   const userId = useUiStore(s => s.userId)!;
-  const [refreshing, setRefreshing] = useState(false);
-  const [dayData, setDayData] = useState<Record<string, { debit: number; txns: Transaction[] }>>({});
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [modalTxns, setModalTxns] = useState<Transaction[]>([]);
+  const { getAccounts } = useTransactionStore();
+  const [refreshing,       setRefreshing]       = useState(false);
+  const [dayData,          setDayData]          = useState<Record<string, { debit: number; txns: Transaction[] }>>({});
+  const [selectedDay,      setSelectedDay]      = useState<string | null>(null);
+  const [modalTxns,        setModalTxns]        = useState<Transaction[]>([]);
+  const [accounts,         setAccounts]         = useState<AccountSummary[]>([]);
+  const [selectedAccount,  setSelectedAccount]  = useState<AccountSummary | null>(null);
 
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1); // 1-based
 
+  useEffect(() => {
+    getAccounts(userId).then(setAccounts);
+  }, [userId]);
+
   const load = useCallback(async () => {
     const from = new Date(year, month - 1, 1).getTime();
     const to = new Date(year, month, 0, 23, 59, 59, 999).getTime();
-    const txns = await TransactionRepository.findByUser(userId, { fromDate: from, toDate: to, limit: 500 });
+    const txns = await TransactionRepository.findByUser(userId, {
+      fromDate: from,
+      toDate: to,
+      limit: 500,
+      ...(selectedAccount ? { bankName: selectedAccount.bankName, accountLast4: selectedAccount.accountLast4 } : {}),
+    });
     const map: Record<string, { debit: number; txns: Transaction[] }> = {};
     txns.forEach(tx => {
       const d = new Date(tx.transactionDate);
@@ -44,7 +57,7 @@ export default function CashFlowCalendarScreen({ navigation }: Props) {
       map[key].txns.push(tx);
     });
     setDayData(map);
-  }, [userId, year, month]);
+  }, [userId, year, month, selectedAccount]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
   const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
@@ -95,6 +108,45 @@ export default function CashFlowCalendarScreen({ navigation }: Props) {
             <MaterialIcons name="chevron-right" size={24} color="#8257E6" />
           </TouchableOpacity>
         </View>
+
+        {/* Account filter tabs */}
+        {accounts.length > 1 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.accountRow}
+            style={{ marginBottom: 12 }}
+          >
+            <TouchableOpacity
+              style={[styles.accountChip, !selectedAccount && styles.accountChipActive]}
+              onPress={() => setSelectedAccount(null)}
+            >
+              <Text style={[styles.accountChipText, !selectedAccount && styles.accountChipTextActive]}>
+                All
+              </Text>
+            </TouchableOpacity>
+            {accounts.map(acct => {
+              const key = `${acct.bankName}|${acct.accountLast4 ?? ''}`;
+              const active = selectedAccount
+                ? `${selectedAccount.bankName}|${selectedAccount.accountLast4 ?? ''}` === key
+                : false;
+              const label = acct.accountLast4
+                ? `${acct.bankName} ••${acct.accountLast4}`
+                : acct.bankName;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  style={[styles.accountChip, active && styles.accountChipActive]}
+                  onPress={() => setSelectedAccount(active ? null : acct)}
+                >
+                  <Text style={[styles.accountChipText, active && styles.accountChipTextActive]}>
+                    {label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        )}
 
         {/* Calendar */}
         <View style={styles.calendarCard}>
@@ -193,6 +245,11 @@ const styles = StyleSheet.create({
   legend:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingBottom: 20 },
   legendLabel:  { fontSize: 11, color: '#4B4B4B' },
   legendBox:    { width: 14, height: 14, borderRadius: 3 },
+  accountRow:         { paddingHorizontal: 16, gap: 8, flexDirection: 'row', alignItems: 'center' },
+  accountChip:        { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: '#2C2C2C', backgroundColor: '#1A1A1A' },
+  accountChipActive:  { backgroundColor: '#8257E6', borderColor: '#8257E6' },
+  accountChipText:    { fontSize: 13, color: '#ABABAB', fontWeight: '500' },
+  accountChipTextActive: { color: '#FFFFFF', fontWeight: '600' },
   modalOverlay: { flex: 1, backgroundColor: '#00000099', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#1A1A1A', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 },
   modalHeader:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
