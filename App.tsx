@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import notifee from '@notifee/react-native';
 
 import AppNavigator from './src/navigation/AppNavigator';
+import { TourProvider } from './src/tour/TourContext';
+import TourOverlay from './src/tour/TourOverlay';
 import { useEmiStore } from './src/store/emiStore';
 import { useUiStore } from './src/store/uiStore';
 import { scheduleEmiReminder } from './src/services/ReminderService';
@@ -89,9 +91,12 @@ export default function App() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
-      <AppNavigator />
-    </GestureHandlerRootView>
+    <TourProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+        <AppNavigator />
+        <TourOverlay />
+      </GestureHandlerRootView>
+    </TourProvider>
   );
 }

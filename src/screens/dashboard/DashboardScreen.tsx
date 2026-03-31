@@ -15,6 +15,7 @@ import { useUiStore } from '../../store/uiStore';
 import { useSmsReader } from '../../hooks/useSmsReader';
 import { runGmailSync } from '../../services/GmailService';
 import CategoryPopup from '../../components/transactions/CategoryPopup';
+import TourStep from '../../tour/TourStep';
 import { formatCurrency, formatCurrencyCompact } from '../../utils/currencyUtils';
 import { formatDate } from '../../utils/dateUtils';
 import { DEFAULT_CATEGORIES } from '../../config/categories';
@@ -171,6 +172,7 @@ export default function DashboardScreen({ navigation }: Props) {
         </View>
 
         {/* ── Hero balance card ── */}
+        <TourStep id="hero">
         <View style={styles.heroCard}>
           <Text style={styles.heroLabel}>Total Spent · {MONTHS[selectedMonth]}</Text>
           <Text style={styles.heroAmount}>{formatCurrency(summary.totalDebit)}</Text>
@@ -195,6 +197,7 @@ export default function DashboardScreen({ navigation }: Props) {
             </View>
           </View>
         </View>
+        </TourStep>
 
         {/* ── Assets & Liabilities ── */}
         <View style={styles.netWorthCard}>
@@ -223,6 +226,7 @@ export default function DashboardScreen({ navigation }: Props) {
         </View>
 
         {/* ── Import buttons ── */}
+        <TourStep id="import">
         <View style={styles.importRow}>
           {Platform.OS === 'android' && (
             <TouchableOpacity style={styles.importBtn} onPress={importSms} disabled={importing}>
@@ -236,8 +240,10 @@ export default function DashboardScreen({ navigation }: Props) {
             <Text style={styles.importText}>✉️  Gmail</Text>
           </TouchableOpacity>
         </View>
+        </TourStep>
 
         {/* ── Category Breakdown ── */}
+        <TourStep id="categories">
         {categoryData.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Where did it go?</Text>
@@ -283,6 +289,7 @@ export default function DashboardScreen({ navigation }: Props) {
             })}
           </View>
         )}
+        </TourStep>
 
         {/* ── Top Merchants ── */}
         {topMerchants.length > 0 && (
@@ -385,13 +392,15 @@ export default function DashboardScreen({ navigation }: Props) {
         onDismiss={hideCategoryPopup}
       />
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => navigation.navigate('AddTransaction')}
-        activeOpacity={0.85}
-      >
-        <MaterialIcons name="add" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
+      <TourStep id="fab">
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate('AddTransaction')}
+          activeOpacity={0.85}
+        >
+          <MaterialIcons name="add" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+      </TourStep>
     </SafeAreaView>
   );
 }
