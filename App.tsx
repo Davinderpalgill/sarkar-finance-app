@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BackgroundFetch from 'react-native-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import notifee from '@notifee/react-native';
@@ -91,12 +92,14 @@ export default function App() {
   };
 
   return (
-    <TourProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
-        <AppNavigator />
-        <TourOverlay />
-      </GestureHandlerRootView>
-    </TourProvider>
+    <SafeAreaProvider>
+      <TourProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+          <AppNavigator />
+          <TourOverlay />
+        </GestureHandlerRootView>
+      </TourProvider>
+    </SafeAreaProvider>
   );
 }
