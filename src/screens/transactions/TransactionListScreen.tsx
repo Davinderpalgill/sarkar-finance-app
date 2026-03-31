@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
   SafeAreaView, TextInput, Alert, ActivityIndicator, ScrollView,
@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { TransactionStackParamList } from '../../navigation/types/navigation';
 import { useTransactionStore, AccountSummary } from '../../store/transactionStore';
 import { useUiStore } from '../../store/uiStore';
@@ -71,6 +72,11 @@ export default function TransactionListScreen({ navigation, route }: Props) {
   useEffect(() => {
     loadTransactions(userId, buildOptions(selectedYear, selectedMonth, filter, selectedAccount, catFilter));
   }, [selectedYear, selectedMonth, filter, selectedAccount, catFilter]);
+
+  // Reload when returning from TransactionDetail (e.g. after category change)
+  useFocusEffect(useCallback(() => {
+    loadTransactions(userId, buildOptions(selectedYear, selectedMonth, filter, selectedAccount, catFilter));
+  }, [selectedYear, selectedMonth, filter, selectedAccount, catFilter, userId]));
 
   const prevMonth = () => {
     if (selectedMonth === 0) { setSelectedYear(y => y - 1); setSelectedMonth(11); }
