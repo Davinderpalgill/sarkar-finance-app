@@ -9,6 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { DashboardStackParamList } from '../../navigation/types/navigation';
 import { useUiStore } from '../../store/uiStore';
 import { useTransactionStore } from '../../store/transactionStore';
+import { useTour } from '../../tour/TourContext';
 import { signOut, getCurrentUser, updateUserEmail, reauthenticateWithPassword, reloadUser } from '../../api/firebase/auth';
 import { DEFAULT_CATEGORIES } from '../../config/categories';
 import { BiometricService } from '../../services/BiometricService';
@@ -100,6 +101,7 @@ function ChangeEmailForm({ onSuccess }: { onSuccess: () => void }) {
 export default function SettingsScreen({ navigation }: Props) {
   const { userId, setUserId, setOnboarded } = useUiStore();
   const { clearAllTransactions } = useTransactionStore();
+  const { resetTour } = useTour();
   const [bioAvailable,     setBioAvailable]     = useState(false);
   const [bioEnabled,       setBioEnabled]       = useState(false);
   const [bioType,          setBioType]          = useState<string | null>(null);
@@ -344,6 +346,7 @@ export default function SettingsScreen({ navigation }: Props) {
         <Section title="About">
           <Row label="Version" value="1.0.0" />
           <Row label="Verification Plan" value="8 test cases" />
+          <Row label="App Tour" value="Replay guide" onPress={resetTour} />
         </Section>
 
         <Section title="Danger Zone">
