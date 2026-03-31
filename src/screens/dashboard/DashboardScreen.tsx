@@ -199,6 +199,11 @@ export default function DashboardScreen({ navigation }: Props) {
         </View>
         </TourStep>
 
+        {/* ── Privacy pill ── */}
+        <View style={styles.privacyPill}>
+          <Text style={styles.privacyPillText}>🔒  Your data lives on this iPhone only — nothing sent to any server</Text>
+        </View>
+
         {/* ── Assets & Liabilities ── */}
         <View style={styles.netWorthCard}>
           <View style={styles.netWorthHeader}>
@@ -482,6 +487,10 @@ const styles = StyleSheet.create({
   netWorthStat:           { flex: 1, alignItems: 'center' },
   netWorthStatLabel:      { fontSize: 10, color: '#6B6B6B', marginBottom: 4 },
   netWorthStatValue:      { fontSize: 14, fontWeight: '700' },
+
+  // Privacy pill
+  privacyPill:     { marginHorizontal: 20, marginBottom: 16, backgroundColor: '#0D2818', borderRadius: 10, paddingVertical: 8, paddingHorizontal: 14, borderWidth: 1, borderColor: '#1A4731' },
+  privacyPillText: { fontSize: 12, color: '#4ADE80', fontWeight: '500', textAlign: 'center' },
 
   // Import row
   importRow:              { flexDirection: 'row', marginHorizontal: 20, marginBottom: 24, gap: 10 },

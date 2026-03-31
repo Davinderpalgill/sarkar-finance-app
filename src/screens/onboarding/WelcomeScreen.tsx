@@ -13,6 +13,7 @@ const features = [
   { icon: '📅', label: 'EMI tracking with payment reminders' },
   { icon: '🤝', label: 'Lend & borrow ledger with friends' },
   { icon: '👥', label: 'Split group expenses instantly' },
+  { icon: '🔒', label: 'Everything stays on your iPhone — nothing sent to any server' },
 ];
 
 export default function WelcomeScreen({ navigation }: Props) {
