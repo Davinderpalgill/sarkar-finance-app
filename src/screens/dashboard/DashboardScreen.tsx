@@ -97,7 +97,7 @@ export default function DashboardScreen({ navigation }: Props) {
 
   useFocusEffect(useCallback(() => {
     load(selectedYear, selectedMonth);
-  }, [selectedYear, selectedMonth]));
+  }, [load, selectedYear, selectedMonth]));
 
   const onRefresh = async () => {
     setRefreshing(true);
