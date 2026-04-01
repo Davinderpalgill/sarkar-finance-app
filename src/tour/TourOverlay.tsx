@@ -3,8 +3,10 @@ import {
   View, Text, StyleSheet, Modal, TouchableOpacity,
   useWindowDimensions, Platform,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTour, TOUR_STEPS } from './TourContext';
+
+// Static safe area bottom inset — avoids useSafeAreaInsets() race on first render
+const BOTTOM_INSET = Platform.OS === 'ios' ? 34 : 0;
 
 const OVERLAY_COLOR = 'rgba(0,0,0,0.78)';
 const BORDER_RADIUS = 14;
@@ -25,7 +27,6 @@ const TAB_STEP_INDEX: Record<string, number> = {
 export default function TourOverlay() {
   const { active, stepIndex, spotlight, currentStep, next, skip } = useTour();
   const { width: sw, height: sh } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
 
   if (!active || !currentStep) return null;
 
@@ -37,7 +38,7 @@ export default function TourOverlay() {
   if (isTabStep && !measure) {
     const tabIdx = TAB_STEP_INDEX[currentStep.id] ?? 0;
     const cx     = tabCentreX(tabIdx, sw);
-    const tabBarTop = sh - TAB_BAR_HEIGHT - insets.bottom;
+    const tabBarTop = sh - TAB_BAR_HEIGHT - BOTTOM_INSET;
     measure = {
       x: cx - 28, y: tabBarTop + 4,
       width: 56,  height: 44,
@@ -52,7 +53,7 @@ export default function TourOverlay() {
   const tooltipW = sw - 40;
   const belowY   = pm ? pm.y + pm.height + 16 : sh / 2;
   const aboveY   = pm ? pm.y - tooltipH - 16  : sh / 2 - tooltipH;
-  const fitsBelow = pm && belowY + tooltipH < sh - insets.bottom - 20;
+  const fitsBelow = pm && belowY + tooltipH < sh - BOTTOM_INSET - 20;
   const tooltipTop = fitsBelow ? belowY : (pm ? aboveY : (sh - tooltipH) / 2);
 
   return (

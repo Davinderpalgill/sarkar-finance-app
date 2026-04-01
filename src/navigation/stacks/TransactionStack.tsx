@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator<TransactionStackParamList>();
 
 export default function TransactionStackNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#0D0D0D' }, headerTintColor: '#FFFFFF', headerShadowVisible: false, contentStyle: { backgroundColor: '#0D0D0D' } }}>
       <Stack.Screen name="TransactionList"   component={TransactionListScreen}   options={{ title: 'Transactions' }} />
       <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} options={{ title: 'Details' }} />
       <Stack.Screen name="AddTransaction"    component={AddTransactionScreen}    options={{ title: 'Add Transaction' }} />

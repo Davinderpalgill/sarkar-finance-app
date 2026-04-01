@@ -2,7 +2,7 @@ import { Category } from '../models/Category';
 
 export const DEFAULT_CATEGORIES: Omit<Category, 'createdAt' | 'updatedAt'>[] = [
   { id: 'cat_food',        name: 'Food & Dining',    icon: 'restaurant',      color: '#FF6B6B', isSystem: true, keywords: ['swiggy','zomato','restaurant','food','dining','cafe','hotel','pizza','biryani','thali'] },
-  { id: 'cat_transport',   name: 'Transport',         icon: 'car',             color: '#4ECDC4', isSystem: true, keywords: ['uber','ola','rapido','auto','taxi','metro','bus','petrol','diesel','fuel'] },
+  { id: 'cat_transport',   name: 'Transport',         icon: 'directions-car',             color: '#4ECDC4', isSystem: true, keywords: ['uber','ola','rapido','auto','taxi','metro','bus','petrol','diesel','fuel'] },
   { id: 'cat_shopping',    name: 'Shopping',          icon: 'shopping-bag',    color: '#45B7D1', isSystem: true, keywords: ['amazon','flipkart','myntra','ajio','nykaa','meesho','shop','store','mall'] },
   { id: 'cat_groceries',   name: 'Groceries',         icon: 'shopping-cart',   color: '#96CEB4', isSystem: true, keywords: ['bigbasket','blinkit','grofers','zepto','jiomart','dmart','supermarket','grocery'] },
   { id: 'cat_entertainment',name: 'Entertainment',    icon: 'movie',           color: '#FFEAA7', isSystem: true, keywords: ['netflix','hotstar','spotify','youtube','prime','zee5','sonyliv','bookmyshow','pvr','inox'] },

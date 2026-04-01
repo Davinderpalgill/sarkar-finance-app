@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
-  SafeAreaView, TextInput, Alert, ActivityIndicator, ScrollView,
+  TextInput, Alert, ActivityIndicator, ScrollView,
   Modal, KeyboardAvoidingView, Platform, Share,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -218,7 +218,7 @@ export default function TransactionListScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Search + Filter button */}
       <View style={styles.searchRow}>
         <TextInput
@@ -333,6 +333,7 @@ export default function TransactionListScreen({ navigation, route }: Props) {
       )}
 
       {loading && <ActivityIndicator color="#8257E6" style={{ marginVertical: 12 }} />}
+
       <FlatList
         data={filtered}
         keyExtractor={item => item.id}
@@ -420,7 +421,7 @@ export default function TransactionListScreen({ navigation, route }: Props) {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -456,7 +457,7 @@ const styles = StyleSheet.create({
   clearAllText:          { fontSize: 12, color: '#FF4757', fontWeight: '600', marginLeft: 4 },
 
   // Account filter
-  accountFilterScroll:   { height: 40, marginBottom: 8 },
+  accountFilterScroll:   { marginBottom: 8, flexGrow: 0, flexShrink: 0 },
   accountFilterRow:      { flexDirection: 'row', gap: 8, paddingHorizontal: 16, alignItems: 'center' },
   accountChip:           { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1, borderColor: '#2C2C2C' },
   accountChipActive:     { backgroundColor: '#8257E6', borderColor: '#8257E6' },
