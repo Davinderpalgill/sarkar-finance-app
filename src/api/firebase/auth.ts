@@ -63,3 +63,9 @@ export function onAuthStateChanged(
 ): () => void {
   return auth().onAuthStateChanged(callback);
 }
+
+export async function deleteAccount(): Promise<void> {
+  const user = auth().currentUser;
+  if (!user) throw new Error('No user signed in');
+  await user.delete();
+}
