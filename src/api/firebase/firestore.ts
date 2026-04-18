@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { COLLECTIONS } from '../../config/firebase';
 import { Transaction } from '../../models/Transaction';
 import { EMI } from '../../models/EMI';
@@ -133,4 +133,35 @@ export function listenToGroupSplits(
     .onSnapshot(snap => {
       onUpdate(snap.docs.map(d => d.data() as Split));
     });
+}
+
+// ── Account Deletion ─────────────────────────────────────────────────────────
+
+async function deleteSubcollection(
+  userRef: FirebaseFirestoreTypes.DocumentReference,
+  subcollection: string,
+  batchSize = 100
+): Promise<void> {
+  const colRef = userRef.collection(subcollection);
+  let snap = await colRef.limit(batchSize).get();
+  while (!snap.empty) {
+    const batch = firestore().batch();
+    snap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    snap = await colRef.limit(batchSize).get();
+  }
+}
+
+export async function deleteAllUserData(userId: string): Promise<void> {
+  const userRef = firestore().collection(COLLECTIONS.USERS).doc(userId);
+
+  // Delete all user subcollections
+  await deleteSubcollection(userRef, COLLECTIONS.TRANSACTIONS);
+  await deleteSubcollection(userRef, COLLECTIONS.EMIS);
+  await deleteSubcollection(userRef, COLLECTIONS.LEDGER);
+  await deleteSubcollection(userRef, COLLECTIONS.CATEGORIES);
+  await deleteSubcollection(userRef, COLLECTIONS.BALANCES);
+
+  // Delete the user document itself
+  await userRef.delete();
 }
