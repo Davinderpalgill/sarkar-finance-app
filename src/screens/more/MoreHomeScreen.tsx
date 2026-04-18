@@ -26,7 +26,6 @@ const SECTIONS = [
     title: 'Settings',
     items: [
       { icon: 'email',           color: '#8257E6', label: 'Gmail Import', sub: 'Connect & sync bank emails',     tab: 'Dashboard', screen: 'EmailSetup'   },
-      { icon: 'link',            color: '#0EA5E9', label: 'Account Aggregator', sub: 'Link bank accounts directly', tab: 'Dashboard', screen: 'AASetup' },
       { icon: 'sync',            color: '#4ADE80', label: 'Sync',         sub: 'Cloud backup & restore',         tab: 'Dashboard', screen: 'Sync'         },
       { icon: 'settings',        color: '#ABABAB', label: 'Settings',     sub: 'Privacy, categories, biometrics', tab: 'Dashboard', screen: 'Settings'    },
     ],
