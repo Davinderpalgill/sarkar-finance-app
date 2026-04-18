@@ -10,7 +10,8 @@ import { DashboardStackParamList } from '../../navigation/types/navigation';
 import { useUiStore } from '../../store/uiStore';
 import { useTransactionStore } from '../../store/transactionStore';
 import { useTour } from '../../tour/TourContext';
-import { signOut, getCurrentUser, updateUserEmail, reauthenticateWithPassword, reloadUser } from '../../api/firebase/auth';
+import { signOut, getCurrentUser, updateUserEmail, reauthenticateWithPassword, reloadUser, deleteAccount } from '../../api/firebase/auth';
+import { deleteAllUserData } from '../../api/firebase/firestore';
 import { DEFAULT_CATEGORIES } from '../../config/categories';
 import { BiometricService } from '../../services/BiometricService';
 import { getCustomCategories, CustomCategory } from '../../utils/customCategories';
@@ -210,6 +211,60 @@ export default function SettingsScreen({ navigation }: Props) {
     );
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and all associated data (transactions, EMIs, ledger entries, etc.). This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete My Account',
+          style: 'destructive',
+          onPress: () => {
+            // Second confirmation for safety
+            Alert.alert(
+              'Are you sure?',
+              'All your data will be permanently removed. You will not be able to recover it.',
+              [
+                { text: 'Go Back', style: 'cancel' },
+                {
+                  text: 'Yes, Delete Everything',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      // Delete cloud data first
+                      if (userId) {
+                        await deleteAllUserData(userId);
+                      }
+                      // Clear local transactions
+                      if (userId) {
+                        await clearAllTransactions(userId);
+                      }
+                      // Delete Firebase Auth account
+                      await deleteAccount();
+                      // Reset local state
+                      setUserId(null);
+                      setOnboarded(false);
+                    } catch (e: any) {
+                      if (e.code === 'auth/requires-recent-login') {
+                        Alert.alert(
+                          'Re-authentication Required',
+                          'For security, please sign out and sign back in, then try deleting your account again.',
+                        );
+                      } else {
+                        Alert.alert('Error', `Could not delete account: ${e.message ?? 'Unknown error'}`);
+                      }
+                    }
+                  },
+                },
+              ]
+            );
+          },
+        },
+      ]
+    );
+  };
+
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <View style={styles.section}>
@@ -256,7 +311,6 @@ export default function SettingsScreen({ navigation }: Props) {
         </Section>
 
         <Section title="Data Sources">
-          <Row label="Account Aggregator" value="Link bank accounts" onPress={() => navigation.navigate('AASetup')} />
           <Row label="Gmail Import" value="Import bank emails" onPress={() => navigation.navigate('EmailSetup')} />
         </Section>
 
@@ -353,6 +407,15 @@ export default function SettingsScreen({ navigation }: Props) {
           <TouchableOpacity style={styles.dangerRow} onPress={handleClearData}>
             <Text style={styles.dangerText}>Clear All Transactions</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.deleteAccountRow} onPress={handleDeleteAccount}>
+            <MaterialIcons name="delete-forever" size={20} color="#FF4757" />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={styles.dangerText}>Delete Account</Text>
+              <Text style={styles.deleteAccountSub}>
+                Permanently delete your account and all data
+              </Text>
+            </View>
+          </TouchableOpacity>
         </Section>
 
         <TouchableOpacity style={styles.signOutBtn} onPress={handleSignOut}>
@@ -382,8 +445,10 @@ const styles = StyleSheet.create({
   emailInput:       { backgroundColor: '#2C2C2C', color: '#FFFFFF', fontSize: 15, padding: 12, borderRadius: 10, marginTop: 4 },
   emailSaveBtn:     { backgroundColor: '#8257E6', padding: 14, borderRadius: 10, alignItems: 'center', marginTop: 8 },
   emailSaveBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
-  dangerRow:    { padding: 16, alignItems: 'center' },
+  dangerRow:    { padding: 16, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#2C2C2C' },
   dangerText:   { color: '#FF4757', fontSize: 15, fontWeight: '600' },
+  deleteAccountRow: { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  deleteAccountSub: { fontSize: 12, color: '#6B6B6B', marginTop: 2 },
   signOutBtn:   { backgroundColor: '#3D0A0A', padding: 18, borderRadius: 14, alignItems: 'center', marginTop: 8 },
   signOutText:  { color: '#FF4757', fontSize: 16, fontWeight: '700' },
   // AI section
